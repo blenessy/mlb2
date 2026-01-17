@@ -101,6 +101,7 @@ read_protected_mode_kernel:
 	sub	edx, 0xfe00			; update the number of bytes to load
 	add	word [gdt.dest], 0xfe00
 	adc	byte [gdt.dest+2], 0
+	adc	byte [gdt.dest+5], 0 ; fix for 15MB kernel limit
 	jmp	short read_protected_mode_kernel.loop
 
 read_protected_mode_kernel_2:

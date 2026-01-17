@@ -1,6 +1,8 @@
 Minimal Linux Bootloader 2
 ========================
 
+**NOTE: This fork also contains the [fix][fix] for 15/16 MB kernel size limit**
+
 Minimal Linux Bootloader, adapted/adopted from Sebastian Plotz
 by Wiktor Kerr, and then later adapted for use in virtualized
 booting environments by Phil Hofer for use in the
@@ -73,3 +75,5 @@ Currently, there are two error codes:
     ----- ----------------------------------------
       R   Failed reading data from disk
       M   Failed moving data to its final location
+
+[fix]: https://michael.stapelberg.ch/posts/2024-02-11-minimal-linux-bootloader-debugging-story/#update-a-fix
