@@ -19,7 +19,7 @@
  * along with mlbinstall. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 
 #include <assert.h>
 #include <stdint.h>
@@ -62,11 +62,12 @@ static void check_version(const char *target, uint32_t kernlba)
 	if (fd == -1)
 		err(1, "Failed opening %s", target);
 
-	long ps = sysconf(_SC_PAGESIZE);
-	size_t mlength = (512 / ps + 1) * ps;
-	uint8_t *m = mmap(NULL, mlength, PROT_READ, MAP_PRIVATE, fd, (off_t)kernlba << 9);
-	if (m == MAP_FAILED)
-		err(1, "Failed mapping %s", target);
+	if (lseek(fd, kernlba << 9, SEEK_SET) == -1)
+		err(1, "Failed seeking to kernel");
+
+	uint8_t m[0x212];
+	if (read(fd, m, sizeof(m)) != sizeof(m))
+		err(1, "Failed reading %s", target);
 
 	/* TODO - portability */
 	uint32_t header = *(uint32_t *)(m + 0x202);
@@ -81,7 +82,6 @@ kernel version >= 2.6.14 required, but %s is 0x%x", target, version);
 	if (!(loadflags & 0x01))
 		errx(1, "Kernel needs to be loaded high");
 
-	munmap(m, mlength);
 	close(fd);
 }
 
